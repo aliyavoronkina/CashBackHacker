@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    // Зависимости будут добавляться в ветках
+    testImplementation 'junit:junit:4.13'
 }
 
 test {

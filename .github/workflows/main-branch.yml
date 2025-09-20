@@ -1,0 +1,33 @@
+name: Main Branch Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Validate Main Branch
+    runs-on: ubuntu-20.04
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Verify no test dependencies in main
+      run: |
+        if grep -q "testImplementation\|testRuntimeOnly" build.gradle; then
+          echo "❌ ERROR: Main branch should not have test dependencies!"
+          exit 1
+        fi
+        echo "✅ Main branch clean - no test dependencies"
+
+    - name: Verify basic compilation
+      run: gradle compileJava --no-daemon --console=plain
